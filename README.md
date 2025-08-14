@@ -55,5 +55,35 @@ python train.py
 ```
 It will use the data until 2025/7/22 to train the needed LSTM model, if you wish to use new data just replace it with new data in the same route
 
+5. **Run Connection Test:**
+```bash
+python test_alpaca_connection.py
+```
+
+6. **Run live trading:**
+```bash
+python train.py
+```
+
+7. **Check Current Positions:**
+```bash
+python check_alpaca_positions.py
+```
+
+## Configuration
+Edit `.env` file to configure:
+
+```
+# Alpaca API (required)
+APCA_API_KEY_ID=your_api_key
+APCA_API_SECRET_KEY=your_secret_key
+APCA_API_BASE_URL=https://paper-api.alpaca.markets
+```
+
+## Performance
+<img width="590" height="403" alt="image" src="https://github.com/user-attachments/assets/ca68a8fa-fb3b-4074-972f-3a744d8c0c4c" />
+
+
+
 
 
