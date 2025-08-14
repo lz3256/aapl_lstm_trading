@@ -38,14 +38,22 @@ git clone https://github.com/lz3256/aapl-lstm-trading.git
 cd aapl-lstm-trading
 ```
 
-2.Install dependencies:
-<pre> ```pip install -r requirements.txt ``` </pre>
+2. **Install dependencies:**
+```bash
+pip install -r requirements.txt
+```
 
-3.Set up environment variables:
-<pre> ```cp .env.example .env #Edit .env with your Alpaca API credentials``` </pre>
+3. **Set up environment variables:**
+```bash
+cp .env.example .env
+#Edit .env with your Alpaca API credentials
+```
 
-4.Train the model:
-<pre> ```cp .env.example .env #Edit .env with your Alpaca API credentials``` </pre>
+4. **Train the model:**
+```bash
+python train.py
+```
+It will use the data until 2025/7/22 to train the needed LSTM model, if you wish to use new data just replace it with new data in the same route
 
-I also attach the model I trained with data before 2025/7/22
+
 
