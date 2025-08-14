@@ -36,7 +36,7 @@ Alpaca Paper Trading Account (Sign up free)
 ```bash
 git clone https://github.com/lz3256/aapl-lstm-trading.git
 cd aapl-lstm-trading
-
+```
 
 2.Install dependencies:
 <pre> ```pip install -r requirements.txt ``` </pre>
