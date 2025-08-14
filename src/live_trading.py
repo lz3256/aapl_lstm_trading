@@ -28,7 +28,7 @@ class AAPLLSTMLiveTrading:
         
     def get_historical_data(self, days=5):
         """Get historical 30-minute bars from Alpaca"""
-        print(f"📊 Fetching historical data for {self.symbol}...")
+        print(f"Fetching historical data for {self.symbol}...")
         
         end = datetime.now()
         start = end - timedelta(days=days)
@@ -45,15 +45,15 @@ class AAPLLSTMLiveTrading:
             ).df
             
         except Exception as e:
-            print(f"❌ Error fetching bars: {e}")
+            print(f"Error fetching bars: {e}")
             return None
             
         if bars.empty:
-            print("❌ No historical data available")
+            print("No historical data available")
             return None
             
-        print(f"✅ Fetched {len(bars)} bars")
-        print(f"📅 Date range: {bars.index[0]} to {bars.index[-1]}")
+        print(f"Fetched {len(bars)} bars")
+        print(f"Date range: {bars.index[0]} to {bars.index[-1]}")
         
         # Rename columns to match your training data format
         bars = bars.rename(columns={
@@ -78,7 +78,7 @@ class AAPLLSTMLiveTrading:
                 'timestamp': quote.timestamp
             }
         except Exception as e:
-            print(f"❌ Error getting latest price: {e}")
+            print(f"Error getting latest price: {e}")
             # Fallback to latest trade if quote fails
             try:
                 trade = self.api.get_latest_trade(self.symbol, feed='iex')
@@ -89,7 +89,7 @@ class AAPLLSTMLiveTrading:
                     'timestamp': trade.timestamp
                 }
             except Exception as e2:
-                print(f"❌ Error getting latest trade: {e2}")
+                print(f"Error getting latest trade: {e2}")
                 return None
     
     def get_current_position(self):
@@ -117,7 +117,7 @@ class AAPLLSTMLiveTrading:
             raise ValueError("Model not loaded!")
         
         if len(returns) < self.sequence_length:
-            print(f"❌ Need at least {self.sequence_length} returns for prediction")
+            print(f"Need at least {self.sequence_length} returns for prediction")
             return None, None
         
         # Get last 10 returns
@@ -147,7 +147,7 @@ class AAPLLSTMLiveTrading:
                 time_in_force='day'
             )
             
-            print(f"✅ {side.upper()} order placed:")
+            print(f"   {side.upper()} order placed:")
             print(f"   Order ID: {order.id}")
             print(f"   Quantity: {qty} shares")
             print(f"   Status: {order.status}")
@@ -155,7 +155,7 @@ class AAPLLSTMLiveTrading:
             return order
             
         except Exception as e:
-            print(f"❌ Error placing order: {e}")
+            print(f"Error placing order: {e}")
             return None
     
     def manage_position(self, predicted_movement, confidence):
@@ -164,22 +164,22 @@ class AAPLLSTMLiveTrading:
         latest_price = self.get_latest_price()
         
         if latest_price is None:
-            print("❌ Cannot get latest price")
+            print("Cannot get latest price")
             return
         
-        print(f"\n💼 Position Management:")
-        print(f"📊 Current price: ${latest_price['price']:.2f}")
-        print(f"🎯 Prediction: {'RISE' if predicted_movement == 1 else 'FALL'} (confidence: {confidence:.1%})")
+        print(f"\nPosition Management:")
+        print(f"Current price: ${latest_price['price']:.2f}")
+        print(f"Prediction: {'RISE' if predicted_movement == 1 else 'FALL'} (confidence: {confidence:.1%})")
         
         # Check if we have a position
         if current_position:
-            print(f"📈 Current position: {current_position['qty']} shares @ ${current_position['avg_entry_price']:.2f}")
-            print(f"💰 Unrealized P&L: ${current_position['unrealized_pl']:.2f}")
+            print(f"Current position: {current_position['qty']} shares @ ${current_position['avg_entry_price']:.2f}")
+            print(f"Unrealized P&L: ${current_position['unrealized_pl']:.2f}")
             
             # If we're long and predict fall, or short and predict rise, close position
             if (current_position['side'] == 'long' and predicted_movement == -1) or \
                (current_position['side'] == 'short' and predicted_movement == 1):
-                print(f"🔄 Closing position due to direction change")
+                print(f"Closing position due to direction change")
                 
                 # Close current position
                 close_side = 'sell' if current_position['side'] == 'long' else 'buy'
@@ -192,30 +192,30 @@ class AAPLLSTMLiveTrading:
                 new_side = 'buy' if predicted_movement == 1 else 'sell'
                 self.place_order(new_side)
             else:
-                print(f"✅ Holding current {current_position['side']} position")
+                print(f"Holding current {current_position['side']} position")
         else:
             # No position, open one based on prediction
-            print("📊 No current position")
+            print("No current position")
             
             if confidence > self.min_confidence:  # Only trade if confidence is high enough
                 side = 'buy' if predicted_movement == 1 else 'sell'
-                print(f"🚀 Opening {side} position")
+                print(f"Opening {side} position")
                 self.place_order(side)
             else:
-                print(f"⏸️  Confidence too low ({confidence:.1%} < {self.min_confidence:.1%}), skipping trade")
+                print(f"Confidence too low ({confidence:.1%} < {self.min_confidence:.1%}), skipping trade")
     
     def load_trained_model(self, model_path='models/aapl_lstm_model.h5'):
         """Load the trained LSTM model"""
         try:
             # Check if model file exists
             if not os.path.exists(model_path):
-                print(f"❌ Model file not found at: {model_path}")
-                print(f"📂 Current directory: {os.getcwd()}")
-                print(f"📂 Looking for: {os.path.abspath(model_path)}")
+                print(f"Model file not found at: {model_path}")
+                print(f"Current directory: {os.getcwd()}")
+                print(f"Looking for: {os.path.abspath(model_path)}")
                 return False
                 
             self.model = load_model(model_path)
-            print(f"✅ Model loaded from {model_path}")
+            print(f"Model loaded from {model_path}")
             
             # Try to load model configuration
             config_path = model_path.replace('.h5', '_config.json').replace('aapl_lstm_model', 'model')
@@ -230,24 +230,24 @@ class AAPLLSTMLiveTrading:
             
             return True
         except Exception as e:
-            print(f"❌ Error loading model: {e}")
-            print("💡 Make sure you've trained the model first with: python src/train_model.py")
+            print(f"Error loading model: {e}")
+            print("Make sure you've trained the model first with: python src/train_model.py")
             return False
     
     def run_live_trading(self, check_interval=60):
         """Run the live trading loop"""
         print("=" * 60)
-        print("🚀 AAPL LSTM Live Trading with Alpaca")
+        print("AAPL LSTM Live Trading with Alpaca")
         print("=" * 60)
-        print(f"📊 Symbol: {self.symbol}")
-        print(f"🎯 Strategy: LSTM prediction on 30-min bars")
-        print(f"⏰ Check interval: {check_interval} seconds")
-        print(f"💼 Position size: {self.position_size} shares")
-        print(f"📡 Data feed: IEX (free for paper trading)")
+        print(f"Symbol: {self.symbol}")
+        print(f"Strategy: LSTM prediction on 30-min bars")
+        print(f"Check interval: {check_interval} seconds")
+        print(f"Position size: {self.position_size} shares")
+        print(f"Data feed: IEX (free for paper trading)")
         print()
         
         # Note about data feeds
-        print("ℹ️  Note: Using IEX data feed (free)")
+        print("   Note: Using IEX data feed (free)")
         print("   - Suitable for paper trading")
         print("   - May have slight delays vs SIP feed")
         print()
@@ -257,27 +257,27 @@ class AAPLLSTMLiveTrading:
             try:
                 current_time = datetime.now()
                 print(f"\n{'='*50}")
-                print(f"🕐 {current_time.strftime('%Y-%m-%d %H:%M:%S')}")
+                print(f"{current_time.strftime('%Y-%m-%d %H:%M:%S')}")
                 
                 # Check if market is open
                 clock = self.api.get_clock()
                 if not clock.is_open:
-                    print("🔒 Market is closed")
-                    print(f"⏰ Next open: {clock.next_open}")
+                    print("Market is closed")
+                    print(f"Next open: {clock.next_open}")
                     time.sleep(check_interval)
                     continue
                 
                 # Check if we should trade (every 30 minutes)
                 if self.last_trade_time and (current_time - self.last_trade_time) < self.min_trade_interval:
                     remaining = self.min_trade_interval - (current_time - self.last_trade_time)
-                    print(f"⏳ Next trade check in: {remaining.seconds // 60} minutes")
+                    print(f"Next trade check in: {remaining.seconds // 60} minutes")
                     time.sleep(check_interval)
                     continue
                 
                 # Get historical data - we have 40 bars available
                 historical_data = self.get_historical_data(days=5)  # 5 days is enough
                 if historical_data is None or len(historical_data) < 15:  # Need at least 15 bars (10 for sequence + buffer)
-                    print(f"❌ Insufficient historical data (need at least 15 bars, got {len(historical_data) if historical_data is not None else 0})")
+                    print(f"Insufficient historical data (need at least 15 bars, got {len(historical_data) if historical_data is not None else 0})")
                     time.sleep(check_interval)
                     continue
                 
@@ -294,18 +294,18 @@ class AAPLLSTMLiveTrading:
                 
                 # Display account info
                 account = self.api.get_account()
-                print(f"\n💰 Account Status:")
+                print(f"\n Account Status:")
                 print(f"   Buying Power: ${float(account.buying_power):,.2f}")
                 print(f"   Portfolio Value: ${float(account.portfolio_value):,.2f}")
                 
-                print(f"\n⏳ Next check in {check_interval} seconds...")
+                print(f"\n Next check in {check_interval} seconds...")
                 
             except KeyboardInterrupt:
-                print("\n\n🛑 Trading stopped by user")
+                print("\n\n Trading stopped by user")
                 break
             except Exception as e:
-                print(f"\n❌ Error in trading loop: {e}")
-                print("🔄 Retrying in 60 seconds...")
+                print(f"\n Error in trading loop: {e}")
+                print(" Retrying in 60 seconds...")
                 time.sleep(60)
             
             time.sleep(check_interval)
@@ -314,9 +314,9 @@ def save_trained_model(strategy_instance, filepath='aapl_lstm_model.h5'):
     """Helper function to save your trained model"""
     if strategy_instance.model:
         strategy_instance.model.save(filepath)
-        print(f"✅ Model saved to {filepath}")
+        print(f" Model saved to {filepath}")
     else:
-        print("❌ No model to save")
+        print(" No model to save")
 
 def main():
     """Main function to run live trading"""
@@ -327,15 +327,15 @@ def main():
     
     # Validate credentials
     if not API_KEY or not API_SECRET:
-        print("❌ Error: API credentials not found!")
-        print("📋 Please create a .env file with:")
+        print(" Error: API credentials not found!")
+        print(" Please create a .env file with:")
         print("   APCA_API_KEY_ID=your_api_key")
         print("   APCA_API_SECRET_KEY=your_secret_key")
         print("   APCA_API_BASE_URL=https://paper-api.alpaca.markets")
         return
     
-    print("✅ API credentials loaded from .env file")
-    print(f"📊 Using base URL: {BASE_URL}")
+    print(" API credentials loaded from .env file")
+    print(f" Using base URL: {BASE_URL}")
     
     # Initialize live trading
     trader = AAPLLSTMLiveTrading(API_KEY, API_SECRET, BASE_URL)
@@ -343,7 +343,7 @@ def main():
     # Load the trained model
     # Note: You need to save your trained model first!
     if not trader.load_trained_model('models/aapl_lstm_model.h5'):
-        print("\n⚠️  To save your trained model, run:")
+        print("\n  To save your trained model, run:")
         print("python src/train_model.py")
         return
     

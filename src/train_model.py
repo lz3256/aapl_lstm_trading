@@ -18,7 +18,7 @@ from aapl_lstm_open_price import AAPLLSTMSimpleStrategy
 
 def train_and_save_model():
     """Train the model and save it for live trading"""
-    print("🚀 Training LSTM model and saving for live trading...")
+    print(" Training LSTM model and saving for live trading...")
     print("=" * 60)
     
     # Create models directory if it doesn't exist
@@ -37,8 +37,8 @@ def train_and_save_model():
         # Save the trained model
         model_path = 'models/aapl_lstm_model.h5'
         strategy.model.save(model_path)
-        print(f"\n✅ Model saved to {model_path}")
-        print("📊 You can now use this model for live trading!")
+        print(f"\n Model saved to {model_path}")
+        print(" You can now use this model for live trading!")
         
         # Also save the model configuration
         config = {
@@ -64,19 +64,19 @@ def train_and_save_model():
         
         # Print summary
         print("\n" + "=" * 60)
-        print("📊 MODEL TRAINING COMPLETE")
+        print(" MODEL TRAINING COMPLETE")
         print("=" * 60)
-        print(f"✅ Model: {model_path}")
-        print(f"✅ Config: {config_path}")
-        print(f"📈 Last prediction: {config['last_prediction']}")
+        print(f" Model: {model_path}")
+        print(f" Config: {config_path}")
+        print(f" Last prediction: {config['last_prediction']}")
         if config['backtest_results']:
-            print(f"📊 Backtest accuracy: {config['backtest_results']['accuracy']:.1%}")
-            print(f"💰 Backtest return: {config['backtest_results']['total_return']:.2%}")
-        print("\n🚀 Ready for live trading! Run: python src/live_trading.py")
+            print(f" Backtest accuracy: {config['backtest_results']['accuracy']:.1%}")
+            print(f" Backtest return: {config['backtest_results']['total_return']:.2%}")
+        print("\n Ready for live trading! Run: python src/live_trading.py")
         
         return True
     else:
-        print("❌ Failed to train model")
+        print(" Failed to train model")
         return False
 
 def main():
