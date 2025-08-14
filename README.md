@@ -51,23 +51,23 @@ cp .env.example .env
 
 4. **Train the model:**
 ```bash
-python train.py
+python src/train_model.py
 ```
 It will use the data until 2025/7/22 to train the needed LSTM model, if you wish to use new data just replace it with new data in the same route
 
 5. **Run Connection Test:**
 ```bash
-python test_alpaca_connection.py
+python src/test_alpaca_connection.py
 ```
 
 6. **Run live trading:**
 ```bash
-python train.py
+python src/live_trading.py
 ```
 
 7. **Check Current Positions:**
 ```bash
-python check_alpaca_positions.py
+python src/check_alpaca_positions.py
 ```
 
 ## Configuration
